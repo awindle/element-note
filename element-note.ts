@@ -51,6 +51,7 @@ class ElementNote {
     element: HTMLDivElement|null = null;
     text: string = ""; //value of the textarea
     collection: ElementNoteCollection;
+    onClose: Function|null = null;
     
     constructor(attachedElement: Element, html:string, text:string, collection:ElementNoteCollection) {
         this.attachedElement = attachedElement;
@@ -63,10 +64,12 @@ class ElementNote {
 		var link:HTMLElement = document.createElement("div");
         $(link).addClass("element-note-link");
         var rect:DOMRect = this.attachedElement.getBoundingClientRect();
-        link.style.left = rect.x+rect.width+"px";
-        link.style.top = rect.y-rect.height+"px";
+        link.style.left = rect.x + rect.width + $(window).scrollLeft()! + "px";
+        link.style.top = rect.y - rect.height + $(window).scrollTop()! + "px";
         link.style.width = "20px";
         link.style.height = "20px";
+        if(typeof this.element?.style.zIndex != "undefined") link.style.zIndex = "2";
+        else link.style.zIndex = (parseInt(this.element?.style.zIndex as unknown as string)+1).toString();
         let boundShowContainer = this.collection.showContainer.bind(this.collection);
         let thisNote = this;
         $(link).on("click", function(){
@@ -75,6 +78,7 @@ class ElementNote {
         });
         var body:Element = document.getElementsByTagName("BODY")[0];
         body.appendChild(link);
+        console.log(link);
     }
 
     addNoteToDOM(document:Document, container:HTMLDivElement, $:Function):HTMLDivElement {
@@ -84,17 +88,18 @@ class ElementNote {
         let thisNote = this;
         $(this.element).find(".element-note-close").on("click", function(){
             thisNote.hide();
+            if(thisNote.onClose != null) thisNote.onClose();
         });
         return this.element!;
     }
 
     show() {
-        this.element!.style.display = "block";
+        $(this.element!).show();
         this.collection.hideLinks();
     }
 
     hide() {
-        this.element!.style.display = "none";
+        $(this.element!).hide();
         this.collection.showLinks();
     }
 }
