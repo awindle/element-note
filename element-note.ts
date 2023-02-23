@@ -26,10 +26,18 @@ class ElementNoteCollection {
         return newElementNote;
     }
 
-    getNoteForElement(element:HTMLDivElement):ElementNote|undefined {
+    getNoteFromElement(element:HTMLDivElement):ElementNote|undefined {
         for(var note in this.notes as ElementNote[]) {
             if(this.notes[note].element?.isSameNode(element)) return this.notes[note];
         }
+    }
+
+    getNoteFromReference(reference:string):ElementNote|null{
+        for(var note in this.notes as ElementNote[]) {
+            let element = this.notes[note].attachedElement;
+            if($(element as Element).text() == reference) return this.notes[note];
+        }
+        return null;
     }
 
     showContainer() {
