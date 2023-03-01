@@ -26,10 +26,11 @@ class ElementNoteCollection {
         return newElementNote;
     }
 
-    getNoteFromElement(element:HTMLDivElement):ElementNote|undefined {
+    getNoteFromElement(element:Element):ElementNote|null {
         for(var note in this.notes as ElementNote[]) {
             if(this.notes[note].element?.isSameNode(element)) return this.notes[note];
         }
+        return null;
     }
 
     getNoteFromReference(reference:string):ElementNote|null{
@@ -83,10 +84,11 @@ class ElementNote {
         $(link).on("click", function(){
             boundShowContainer();
             thisNote.show();
+            $(".element-note-link").css("animation-name", "none");
+            $(link).css("animation-name", "element-note-link-selected");
         });
         var body:Element = document.getElementsByTagName("BODY")[0];
         body.appendChild(link);
-        console.log(link);
     }
 
     addNoteToDOM(document:Document, container:HTMLDivElement, $:Function):HTMLDivElement {
