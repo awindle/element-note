@@ -61,6 +61,7 @@ class ElementNote {
     text: string = ""; //value of the textarea
     collection: ElementNoteCollection;
     onClose: Function|null = null;
+    link:HTMLElement|null = null;
     
     constructor(attachedElement: Element, html:string, text:string, collection:ElementNoteCollection) {
         this.attachedElement = attachedElement;
@@ -69,7 +70,7 @@ class ElementNote {
         this.collection = collection;
     }
 
-    addLinkToDOM(document:Document) {
+    addLinkToDOM(document:Document):HTMLElement {
 		var link:HTMLElement = document.createElement("div");
         $(link).addClass("element-note-link");
         var rect:DOMRect = this.attachedElement.getBoundingClientRect();
@@ -82,6 +83,7 @@ class ElementNote {
         let boundShowContainer = this.collection.showContainer.bind(this.collection);
         let thisNote = this;
         $(link).on("click", function(){
+            console.log("link clicked for", thisNote);
             boundShowContainer();
             thisNote.show();
             $(".element-note-link").css("animation-name", "none");
@@ -89,6 +91,8 @@ class ElementNote {
         });
         var body:Element = document.getElementsByTagName("BODY")[0];
         body.appendChild(link);
+        this.link = link;
+        return link;
     }
 
     addNoteToDOM(document:Document, container:HTMLDivElement, $:Function):HTMLDivElement {
