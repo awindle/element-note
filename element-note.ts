@@ -62,6 +62,7 @@ class ElementNote {
     collection: ElementNoteCollection;
     onClose: Function|null = null;
     link:HTMLElement|null = null;
+    onAddedToDom: Function = function(){};
     
     constructor(attachedElement: Element, html:string, text:string, collection:ElementNoteCollection) {
         this.attachedElement = attachedElement;
@@ -104,25 +105,7 @@ class ElementNote {
             thisNote.hide();
             if(thisNote.onClose != null) thisNote.onClose();
         });
-        $(".tablinks").on("click", function(){
-            let tabName:string = $(this as HTMLElement).attr("tabname");
-
-            // Get all elements with class="tabcontent" and hide them
-            let tabcontent = $(".tabcontent");
-            for (var i = 0; i < tabcontent.length; i++) {
-                (tabcontent[i] as HTMLElement).style.display = "none";
-            }
-        
-            // Get all elements with class="tablinks" and remove the class "active"
-            var tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-        
-            // Show the current tab, and add an "active" class to the button that opened the tab
-            $("."+tabName).show();
-            $("."+tabName).addClass("active");
-        });
+        thisNote.onAddedToDom();
         return this.element!;
     }
 
