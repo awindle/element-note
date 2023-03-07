@@ -62,7 +62,6 @@ class ElementNote {
     collection: ElementNoteCollection;
     onClose: Function|null = null;
     link:HTMLElement|null = null;
-    onAddedToDom: Function = function(){};
     
     constructor(attachedElement: Element, html:string, text:string, collection:ElementNoteCollection) {
         this.attachedElement = attachedElement;
@@ -105,7 +104,6 @@ class ElementNote {
             thisNote.hide();
             if(thisNote.onClose != null) thisNote.onClose();
         });
-        thisNote.onAddedToDom();
         return this.element!;
     }
 
