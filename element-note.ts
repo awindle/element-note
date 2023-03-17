@@ -33,6 +33,13 @@ class ElementNoteCollection {
         return null;
     }
 
+    getNoteFromAttachedElement(element:Element):ElementNote|null {
+        for(var note in this.notes as ElementNote[]) {
+            if(this.notes[note].attachedElement?.isSameNode(element)) return this.notes[note];
+        }
+        return null;
+    }
+
     getNoteFromReference(reference:string):ElementNote|null{
         for(var note in this.notes as ElementNote[]) {
             let element = this.notes[note].attachedElement;
@@ -51,6 +58,14 @@ class ElementNoteCollection {
 
     hideLinks() {
         this.$(".element-note-link").hide();
+    }
+
+    removeAll() {
+        for(var i in this.notes) {
+            $(".element-note").remove();
+            $(".element-note-link").remove();
+        }
+        this.notes = [];
     }
 }
 
