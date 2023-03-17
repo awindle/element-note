@@ -124,11 +124,9 @@ class ElementNote {
 
     show() {
         $(this.element!).show();
-        this.collection.hideLinks();
     }
 
     hide() {
         $(this.element!).hide();
-        this.collection.showLinks();
     }
 }
