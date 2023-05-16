@@ -70,15 +70,15 @@ class ElementNoteCollection {
 }
 
 class ElementNote {
-    attachedElement: Element;
+    attachedElement: Element|null;
     html: string;
     element: HTMLDivElement|null = null;
     text: string = ""; //value of the textarea
-    collection: ElementNoteCollection;
+    collection: ElementNoteCollection|null;
     onClose: Function|null = null;
     link:HTMLElement|null = null;
     
-    constructor(attachedElement: Element, html:string, text:string, collection:ElementNoteCollection) {
+    constructor(attachedElement:Element|null, html:string, text:string, collection:ElementNoteCollection|null) {
         this.attachedElement = attachedElement;
         this.html = html;
         this.text = text;
@@ -86,9 +86,10 @@ class ElementNote {
     }
 
     addLinkToDOM(document:Document):HTMLElement {
+        if(this.attachedElement == null) throw("No attached element for note.");
 		var link:HTMLElement = document.createElement("div");
         $(link).addClass("element-note-link");
-        var rect:DOMRect = this.attachedElement.getBoundingClientRect();
+        var rect:DOMRect = (this.attachedElement as Element).getBoundingClientRect();
         link.style.left = rect.x + rect.width + $(window).scrollLeft()! + "px";
         link.style.top = rect.y - rect.height + $(window).scrollTop()! + "px";
         link.style.width = "20px";
@@ -124,11 +125,11 @@ class ElementNote {
 
     show() {
         $(this.element!).show();
-        this.collection.hideLinks();
+        if(this.collection) this.collection.hideLinks();
     }
 
     hide() {
         $(this.element!).hide();
-        this.collection.showLinks();
+        if(this.collection) this.collection.showLinks();
     }
 }
