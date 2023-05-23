@@ -33,11 +33,12 @@ class ElementNoteCollection {
         return null;
     }
 
-    getNoteFromAttachedElement(element:Element):ElementNote|null {
+    getNotesFromAttachedElement(element:Element):ElementNote[] {
+        var result=[];
         for(var note in this.notes as ElementNote[]) {
-            if(this.notes[note].attachedElement?.isSameNode(element)) return this.notes[note];
+            if(this.notes[note].attachedElement?.isSameNode(element)) result.push(this.notes[note]);
         }
-        return null;
+        return result;
     }
 
     getNoteFromReference(reference:string):ElementNote|null{
