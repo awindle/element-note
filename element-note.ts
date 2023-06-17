@@ -78,6 +78,7 @@ class ElementNote {
     collection: ElementNoteCollection|null;
     onClose: Function|null = null;
     link:HTMLElement|null = null;
+    rect:DOMRect|null = null;
     
     constructor(attachedElement:Element|null, html:string, text:string, collection:ElementNoteCollection|null) {
         this.attachedElement = attachedElement;
@@ -86,21 +87,39 @@ class ElementNote {
         this.collection = collection;
     }
 
-    addLinkToDOM(document:Document):HTMLElement {
+    addLinkToDOM(document:Document, targetText?:string):HTMLElement {
         if(this.attachedElement == null) throw("No attached element for note.");
+        var range:Range = document.createRange();
+        var nodes = this.attachedElement.childNodes;
 		var link:HTMLElement = document.createElement("div");
         $(link).addClass("element-note-link");
-        var rect:DOMRect = (this.attachedElement as Element).getBoundingClientRect();
-        link.style.left = rect.x + rect.width + $(window).scrollLeft()! + "px";
-        link.style.top = rect.y - rect.height + $(window).scrollTop()! + "px";
+
+        if(targetText != undefined) {
+            for (let node of nodes as any)
+            {
+                if (node.nodeType == Node.TEXT_NODE) {
+                    var start = node.textContent!.search(RegExp(targetText as string, "gi"));
+                    var end;
+                    if(start != -1) {
+                        end = start + targetText.length;
+                        range.setStart(node, start);
+                        range.setEnd(node, end);
+                        var rects = range.getClientRects();
+		            	if(rects[0]) this.rect = rects[0];
+                    }
+                }
+            }                        
+        } else this.rect = (this.attachedElement as Element).getBoundingClientRect();
+        
+        link.style.left = this.rect!.x -19 + this.rect!.width + $(window).scrollLeft()! + "px";
+        link.style.top = this.rect!.y -5 - this.rect!.height + $(window).scrollTop()! + "px";
         link.style.width = "20px";
         link.style.height = "20px";
         if(typeof this.element?.style.zIndex != "undefined") link.style.zIndex = "2";
         else link.style.zIndex = (parseInt(this.element?.style.zIndex as unknown as string)+1).toString();
-        let boundShowContainer = this.collection.showContainer.bind(this.collection);
+        let boundShowContainer = this.collection!.showContainer.bind(this.collection);
         let thisNote = this;
         $(link).on("click", function(){
-            console.log("link clicked for", thisNote);
             boundShowContainer();
             thisNote.show();
             $(".element-note-link").css("animation-name", "none");
