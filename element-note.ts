@@ -94,22 +94,24 @@ class ElementNote {
 		var link:HTMLElement = document.createElement("div");
         $(link).addClass("element-note-link");
 
+        this.rect = (this.attachedElement as Element).getBoundingClientRect();
         if(targetText != undefined) {
             for (let node of nodes as any)
             {
+                var start;
                 if (node.nodeType == Node.TEXT_NODE) {
-                    var start = node.textContent!.search(RegExp(targetText as string, "gi"));
+                    start = node.textContent!.search(RegExp(targetText as string, "gi"));
                     var end;
                     if(start != -1) {
                         end = start + targetText.length;
                         range.setStart(node, start);
                         range.setEnd(node, end);
                         var rects = range.getClientRects();
-		            	if(rects[0]) this.rect = rects[0];
+                        if(rects[0]) this.rect = rects[0];
                     }
                 }
             }                        
-        } else this.rect = (this.attachedElement as Element).getBoundingClientRect();
+        }
         
         link.style.left = this.rect!.x -19 + this.rect!.width + $(window).scrollLeft()! + "px";
         link.style.top = this.rect!.y -5 - this.rect!.height + $(window).scrollTop()! + "px";
