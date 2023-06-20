@@ -89,30 +89,11 @@ class ElementNote {
 
     addLinkToDOM(document:Document, targetText?:string):HTMLElement {
         if(this.attachedElement == null) throw("No attached element for note.");
-        var range:Range = document.createRange();
-        var nodes = this.attachedElement.childNodes;
 		var link:HTMLElement = document.createElement("div");
         $(link).addClass("element-note-link");
 
-        this.rect = (this.attachedElement as Element).getBoundingClientRect();
-        if(targetText != undefined) {
-            for (let node of nodes as any)
-            {
-                var start;
-                if (node.nodeType == Node.TEXT_NODE) {
-                    start = node.textContent!.search(RegExp(targetText as string, "gi"));
-                    var end;
-                    if(start != -1) {
-                        end = start + targetText.length;
-                        range.setStart(node, start);
-                        range.setEnd(node, end);
-                        var rects = range.getClientRects();
-                        if(rects[0]) this.rect = rects[0];
-                    }
-                }
-            }                        
-        }
-        
+        if(targetText) this.setRect(targetText);
+
         link.style.left = this.rect!.x -19 + this.rect!.width + $(window).scrollLeft()! + "px";
         link.style.top = this.rect!.y -5 - this.rect!.height + $(window).scrollTop()! + "px";
         link.style.width = "20px";
@@ -143,6 +124,27 @@ class ElementNote {
             if(thisNote.onClose != null) thisNote.onClose();
         });
         return this.element!;
+    }
+
+    setRect(targetText:string) {
+        var range:Range = document.createRange();
+        var nodes = this.attachedElement!.childNodes;
+        this.rect = (this.attachedElement as Element).getBoundingClientRect();
+        for (let node of nodes as any)
+        {
+            var start;
+            if (node.nodeType == Node.TEXT_NODE) {
+                start = node.textContent!.search(RegExp(targetText as string, "gi"));
+                var end;
+                if(start != -1) {
+                    end = start + targetText.length;
+                    range.setStart(node, start);
+                    range.setEnd(node, end);
+                    var rects = range.getClientRects();
+                    if(rects[0]) this.rect = rects[0];
+                }
+            }
+        } 
     }
 
     show() {
