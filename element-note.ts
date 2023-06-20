@@ -12,6 +12,7 @@ class ElementNoteCollection {
 
     addContainerToDocument() {       
         this.container = this.document.createElement("div");
+        $(this.container).css("z-index", 2100000000);
         this.container.id = "element-notes-container";
         var body:Element = this.document.getElementsByTagName("BODY")[0];
         body.appendChild(this.container);
@@ -109,7 +110,7 @@ class ElementNote {
             $(link).css("animation-name", "element-note-link-selected");
         });
         var body:Element = document.getElementsByTagName("BODY")[0];
-        body.appendChild(link);
+        this.collection!.container!.appendChild(link);
         this.link = link;
         return link;
     }
